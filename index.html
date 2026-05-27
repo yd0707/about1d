@@ -989,22 +989,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================================
   const musicConfig = SITE_DATA.music;
 
-  function initMusic() {
-    if (!musicConfig.file) return;
+  let musicLoaded = false;
+
+  function loadMusic() {
+    if (musicLoaded || !musicConfig.file) return;
     bgmAudio.src = musicConfig.file;
     bgmAudio.volume = musicConfig.volume;
-    bgmAudio.pause();
-    volumeSlider.value = Math.round(musicConfig.volume * 100);
-  }
-
-  function playMusic() {
-    if (!musicConfig.file) return;
-    bgmAudio.play().then(() => {
-      setPlayingState(true);
-    }).catch(() => {
-      // Autoplay blocked, show paused state
-      setPlayingState(false);
-    });
+    bgmAudio.load();
+    musicLoaded = true;
   }
 
   function setPlayingState(playing) {
@@ -1021,6 +1013,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   musicBtn.addEventListener('click', () => {
     if (!musicConfig.file) return;
+    loadMusic();
     if (bgmAudio.paused) {
       bgmAudio.play().then(() => setPlayingState(true)).catch(() => {});
     } else {
@@ -1030,6 +1023,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   volumeSlider.addEventListener('input', () => {
+    loadMusic();
     bgmAudio.volume = parseInt(volumeSlider.value) / 100;
   });
 
@@ -1039,8 +1033,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => musicPlayer.classList.remove('visible'), 3000);
   }, 500);
 
-  // Initialize music (no autoplay — only plays on button click)
-  initMusic();
+  // Initialize volume slider only (no audio loaded until button click)
+  if (musicConfig.file) {
+    volumeSlider.value = Math.round(musicConfig.volume * 100);
+  }
 
   // Sync play state from audio events
   bgmAudio.addEventListener('play', () => setPlayingState(true));
