@@ -750,7 +750,7 @@ body {
 
 <!-- ===== MUSIC PLAYER ===== -->
 <div class="music-player" id="musicPlayer">
-  <audio id="bgmAudio" loop preload="auto"></audio>
+  <audio id="bgmAudio" loop preload="none"></audio>
   <button class="music-btn" id="musicBtn" title="播放 / 暂停">
     <svg viewBox="0 0 24 24" id="musicIconPlay">
       <polygon points="8,5 19,12 8,19"/>
@@ -993,6 +993,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!musicConfig.file) return;
     bgmAudio.src = musicConfig.file;
     bgmAudio.volume = musicConfig.volume;
+    bgmAudio.pause();
     volumeSlider.value = Math.round(musicConfig.volume * 100);
   }
 
