@@ -1038,24 +1038,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => musicPlayer.classList.remove('visible'), 3000);
   }, 500);
 
-  // Attempt autoplay on first user interaction
-  let autoplayAttempted = false;
-  function attemptAutoplay() {
-    if (autoplayAttempted || !musicConfig.file) return;
-    autoplayAttempted = true;
-    playMusic();
-  }
-  document.addEventListener('click', attemptAutoplay, { once: true });
-  document.addEventListener('touchstart', attemptAutoplay, { once: true });
-
-  // Also try autoplay immediately (may be blocked)
+  // Initialize music (no autoplay — only plays on button click)
   initMusic();
-  if (musicConfig.file) {
-    bgmAudio.play().then(() => setPlayingState(true)).catch(() => {
-      // Will retry on first user interaction
-      setPlayingState(false);
-    });
-  }
 
   // Sync play state from audio events
   bgmAudio.addEventListener('play', () => setPlayingState(true));
